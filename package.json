@@ -10,5 +10,8 @@
     "Nome: Show do Milhão"
   ],
   "author": "Luigi Aranha de Andrade",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "prompt-sync": "^4.2.0"
+  }
 }
