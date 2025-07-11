@@ -24,6 +24,8 @@ function novoJogo() {
   }
 }
 
+let pontos = 0; //"pontos" significa quantas questões foram acertadas pelo jogador.
+
 function jogoExecutando(){
     //As questões serão sobre geografia e história.
     const questoes = [
@@ -103,30 +105,25 @@ function jogoExecutando(){
         falsas: ["Havaí", "Nova Zelândia", "Ilhas Fiji"]
         }
     ];
-    
-    let pontos = 0; //"pontos" significa quantas questões foram acertadas pelo jogador.
-    //os valores de cada variável rodada ou intervalos definidos nas regras do jogo (leia o ReadME). 
-    let rodada_5 = 10000; //10 mil cada.
-    let rodada_10 = 30000; //30 mil cada.
-    let rodada_13 = 100000; //100 mil cada.
-    let rodada_14 = 200000; //200 mil, caso o jogador erre o valor totalizado das anteriores será cortado ao meio, levando para casa apenas a metade da soma dos valores anteriores.
-    let rodada_15 = 1000000; //1 milhão, mas com o risco de perder todo o dinheiro somado das anteriores.
 
     for (let rodada = 0; rodada < questoes.length; rodada++) {
-        console.log(`Rodada ${rodada + 1}`);
+        console.log(`Rodada ${rodada + 1} \n`);
 
         let perguntaAtual = questoes[rodada].pergunta;
         let correta = questoes[rodada].correta;
         let falsas = questoes[rodada].falsas;
 
         // Junta todas as alternativas e embaralha
-        let alternativas = [correta, ...falsas]; //o "..." serve para concatenar arrays.
+        let alternativas = [correta, ...falsas]; //o "..." serve para concatenar arrays. Ele funciona como um operador de espalhamento, que "espalha" os elementos de um array em outro array ou em uma função, sendo nesse caso, o array "falsas" está sendo espalhado dentro do array "alternativas".
         alternativas.sort(() => Math.random() - 0.5); // nessa linha, o método sort() está sendo usado para embaralhar as alternativas de forma aleatória. E o math.random() gera um número aleatório entre 0 e 1. Subtraindo 0.5, o resultado pode ser positivo ou negativo, o que faz com que a ordem dos elementos seja alterada de maneira imprevisível.
 
         console.log(perguntaAtual);
         for (let i = 0; i < alternativas.length; i++) {
-            console.log(`\n${i + 1}ªalternativa - ${alternativas[i]}`);
+            console.log(`${i + 1}ªalternativa - ${alternativas[i]}`);
         }
+
+        console.log(`R$ ${calcularValorTotal(pontos)}, esse será o valor em dinheiro caso pare agora` +
+        `\nCaso deseje parar aperte qualquer outra tecla fora dos números específicados abaixo.`); // Atualiza o valor do prêmio a cada resposta correta.
 
         let respostaUsuario = prompt("\nDigite o número da alternativa correta (1 a 4): ");
         
@@ -135,15 +132,54 @@ function jogoExecutando(){
             pontos++;
         } 
 
-        else {
+        else if (alternativas[respostaUsuario - 1] === falsas) {
             console.log("\nResposta errada!");
-            console.log(`Fim do jogo. Pontuação total: ${pontos}`);
-            break; // Encerra o jogo ao errar uma pergunta.
+            break; 
         }
-        
-        console.log(`Fim do jogo. Pontuação total: ${pontos}`);
+
+        else {
+            console.log("Você escolheu parar o jogo.");
+            break; // Sai do loop principal e termina o jogo.
+        }
+
     }
+}
+
+//Cálculo do valor total ganho pelo jogador.
+let premio; 
+
+function calcularValorTotal(pontos) {
+
+    //os valores de cada variável rodada ou intervalos definidos nas regras do jogo (leia o ReadME). 
+    const rodada_5 = 10000; //10 mil cada.
+    const rodada_10 = 30000; //30 mil cada.
+    const rodada_13 = 100000; //100 mil cada.
+    const rodada_14 = 200000; //200 mil, caso o jogador erre o valor totalizado das anteriores será cortado ao meio, levando para casa apenas a metade da soma dos valores anteriores.
+    const rodada_15 = 1000000; //1 milhão, mas com o risco de perder todo o dinheiro somado das anteriores.
+
+    if (pontos > 0 && pontos <= 5) {
+        premio = pontos * rodada_5;
+    
+        if (pontos > 5 && pontos <= 10) {
+            premio = (pontos * 5 * rodada_5) + ((pontos - 5) * rodada_10);
+        }
+        else if (pontos > 10 && pontos <= 13) {
+            premio = (pontos *5 * rodada_5) + (pontos * 5 * rodada_10) + ((pontos - 10) * rodada_13);
+        }
+    }
+
+    else if (pontos === 14) {
+        premio = ((pontos * 5 * rodada_5) + (pontos * 5 * rodada_10) + (pontos * 3 * rodada_13) + rodada_14);
+    }
+    else if (pontos === 15) {
+        premio = (pontos * 5 * rodada_5) + (pontos * 5 * rodada_10) + (pontos * 3 * rodada_13) + rodada_14 + rodada_15;
+    }
+    return premio;
 }
 
 novoJogo();
 jogoExecutando();
+
+console.log(`Fim do jogo. Pontuação total: ${pontos}`);
+console.log(`Parabéns, ${jogador}! Você ganhou R$${premio} reais!`);
+console.log(calcularValorTotal(pontos));
