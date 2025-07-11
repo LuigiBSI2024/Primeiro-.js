@@ -17,6 +17,9 @@ A partir da segunda pergunta, o participante pode optar por parar, o que corresp
 
 “Programa Silvio Santos com Patricia Abravanel” vai ao ar todo domingo, às 19h, no SBT.
 
+### Observação
+- Nesta versão serão apenas 15 perguntas 
+
 ## Fontes
 
 - https://adnews.com.br/post/show-do-milhao-volta-ao-sbt-com-patricia-abravanel-no-comando

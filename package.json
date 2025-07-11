@@ -1,0 +1,14 @@
+{
+  "name": "primeiro-.js",
+  "version": "1.0.0",
+  "description": "Luigi Aranha de Andrade - BSI - 2024",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "keywords": [
+    "Quiz Game",
+    "Nome: Show do Milhão"
+  ],
+  "author": "Luigi Aranha de Andrade",
+  "license": "MIT"
+}
