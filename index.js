@@ -5,7 +5,7 @@ let jogador = "";
 function novoJogo() {
     jogador = prompt("Insira seu nome participante:");
 
-    alert(
+    console.log(
     "Bem-vindo ao Show do Milhão, " + jogador + "!" +
     "\nEsse jogo consiste em uma série de 15 perguntas e respostas."
     );
@@ -18,12 +18,10 @@ function novoJogo() {
     } 
 
     else {
-        alert("Aguardamos pacientemente, tome seu tempo.");
+        console.log("Aguardamos pacientemente, tome seu tempo.");
         preparacao(); // chamada recursiva controlada
     }
   }
-
-  preparacao();
 }
 
 function jogoExecutando(){
