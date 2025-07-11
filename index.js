@@ -3,7 +3,7 @@ const prompt = require('prompt-sync')({sigint: true}); // Importa o prompt-sync 
 let jogador = "";
 
 function novoJogo() {
-    jogador = prompt("Insira seu nome participante:");
+    jogador = prompt("Insira seu nome participante: ");
 
     console.log(
     "Bem-vindo ao Show do Milhão, " + jogador + "!" +
@@ -104,7 +104,13 @@ function jogoExecutando(){
         }
     ];
     
-    let pontos = 0;
+    let pontos = 0; //"pontos" significa quantas questões foram acertadas pelo jogador.
+    //os valores de cada variável rodada ou intervalos definidos nas regras do jogo (leia o ReadME). 
+    let rodada_5 = 10000; //10 mil cada.
+    let rodada_10 = 30000; //30 mil cada.
+    let rodada_13 = 100000; //100 mil cada.
+    let rodada_14 = 200000; //200 mil, caso o jogador erre o valor totalizado das anteriores será cortado ao meio, levando para casa apenas a metade da soma dos valores anteriores.
+    let rodada_15 = 1000000; //1 milhão, mas com o risco de perder todo o dinheiro somado das anteriores.
 
     for (let rodada = 0; rodada < questoes.length; rodada++) {
         console.log(`Rodada ${rodada + 1}`);
@@ -114,28 +120,29 @@ function jogoExecutando(){
         let falsas = questoes[rodada].falsas;
 
         // Junta todas as alternativas e embaralha
-        let alternativas = [correta, ...falsas];
-        alternativas.sort(() => Math.random() - 0.5); // embaralha
+        let alternativas = [correta, ...falsas]; //o "..." serve para concatenar arrays.
+        alternativas.sort(() => Math.random() - 0.5); // nessa linha, o método sort() está sendo usado para embaralhar as alternativas de forma aleatória. E o math.random() gera um número aleatório entre 0 e 1. Subtraindo 0.5, o resultado pode ser positivo ou negativo, o que faz com que a ordem dos elementos seja alterada de maneira imprevisível.
 
         console.log(perguntaAtual);
         for (let i = 0; i < alternativas.length; i++) {
-            console.log(`${i + 1}ªrodada - ${alternativas[i]}`);
+            console.log(`\n${i + 1}ªalternativa - ${alternativas[i]}`);
         }
 
-        let respostaUsuario = prompt("Digite o número da alternativa correta (1 a 4):");
+        let respostaUsuario = prompt("\nDigite o número da alternativa correta (1 a 4): ");
         
         if (alternativas[respostaUsuario - 1] === correta) {
-            console.log("Resposta correta!");
+            console.log("\nResposta correta!");
             pontos++;
         } 
 
         else {
-            console.log("Resposta errada!");
+            console.log("\nResposta errada!");
+            console.log(`Fim do jogo. Pontuação total: ${pontos}`);
+            break; // Encerra o jogo ao errar uma pergunta.
         }
+        
+        console.log(`Fim do jogo. Pontuação total: ${pontos}`);
     }
-
-    console.log(`Fim do jogo. Pontuação total: ${pontos}`);
-
 }
 
 novoJogo();
