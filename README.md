@@ -8,14 +8,14 @@ Criando meu primeiro java-script funcional.
 O jogo do "Show do Milhão"
 
 ## Regras da minha versão do "Show do Milhão"
-- A cada 5 questões contabiliza-se uma rodada.
-- O valor das 5 primeiros questões são de R$10.000 reais cada questão individualmente.
-- O valor da 6ª até 10ª questão vale R$ 30.000 cada uma.
-- O valor da 11ª a 13ª são de 100 mil cada.
-- O valor da 14ª será de 200 mil, caso o jogador erre o valor totalizado das anteriores será cortado ao meio, levando para casa apenas a metade da soma dos valores anteriores.
-- A última e 15ª questão vale R$1.000.000 de reais.
-- Ao errar a perguntar atual perde-se somente o valor da última respondida, sendo contabilizados os valores anteriores na soma total.
-- Se errar a última questão perde-se tudo, o que inclui as corretas.
+- O valor das 5 primeiros questões são de R$10.000 reais cada questão individualmente (Rodada 1)
+- O valor da 6ª até 10ª questão vale R$ 30.000 cada uma. (Rodada 2)
+- O valor da 11ª a 13ª são de 100 mil cada. (Rodada 3)
+- O valor da 14ª será de 200 mil, caso o jogador erre o valor totalizado das anteriores será cortado ao meio, levando para casa apenas a metade da soma dos valores anteriores (Rodada 4)
+- A última e 15ª questão vale R$1.000.000 de reais (Rodada 5)
+- Se errar a última questão perde-se tudo, o que inclui as corretas
+- Ao errar a perguntar atual perde-se somente o valor da última respondida, sendo contabilizados os valores anteriores na soma total
+
 
 ## Regras do “Show do Milhão”
 
@@ -28,8 +28,19 @@ A partir da segunda pergunta, o participante pode optar por parar, o que corresp
 “Programa Silvio Santos com Patricia Abravanel” vai ao ar todo domingo, às 19h, no SBT.
 
 ### Observação
-- Nesta versão serão apenas 15 perguntas 
+- Nesta versão o jogo terá apenas 15 perguntas 
+
+## Como jogar?
+- Responda as perguntas com número de 1 a 4 ao digitá-los
+- Caso queira parar, digite qualquer outra tecla que não foi citada, o valor adquirido é somado conforme as perguntas são respondidas.
+- Leia as "Regras" para sanar qualquer dúvida
+
+# Como executar?
+- Abra o terminal do Codespace Github e digite: npm start
 
 ## Fontes
 
 - https://adnews.com.br/post/show-do-milhao-volta-ao-sbt-com-patricia-abravanel-no-comando
+
+## Licença deste projeto
+- Licença MIT, leia o arquivo com o nome "LICENSE"
