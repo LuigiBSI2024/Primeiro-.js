@@ -1,64 +1,68 @@
 const prompt = require('prompt-sync')({sigint: true}); // Importa o prompt-sync para entrada de dados, ele é instalado via este comando: npm install prompt-sync.
 
-let jogador = "";
+let jogador;;
 
 function novoJogo() {
     jogador = prompt("Insira seu nome participante: ");
 
     console.log(
-        "Bem-vindo ao Show do Milhão, " + jogador + "!" +
+        "\nBem-vindo ao Show do Milhão, " + jogador + "!" +
         "\nEsse jogo consiste em uma série de 15 perguntas e respostas."
     );
 
-    function preparacao() {
-        let resposta = prompt("Está pronto?\nDigite: Sim ou Não. \nSua resposta: ");
-
-        if (resposta && (resposta[0] === "S" || resposta[0] === "s")) {
-            jogoExecutando(); 
-        } 
-
-        else {
-            console.log("Aguardamos pacientemente, tome seu tempo.");
-            preparacao(); // chamada recursiva controlada
-        }
-    }
-    preparacao();
 }
+
+function preparacao() {
+        
+    let resposta = prompt("\nEstá pronto? Digite: Sim ou Não. \nSua resposta: ");
+
+    if (resposta[0] === "S" || resposta[0] === "s") {
+        jogoExecutando(); 
+    } 
+
+    else {
+        console.log("Aguardamos pacientemente, tome seu tempo.");
+        preparacao();
+    }
+}
+
+novoJogo();
+preparacao();
 
 let pontos = 0; //"pontos" significa quantas questões foram acertadas pelo jogador.
 
-//Declarando uma constante objeto para substituir o uso de vários "if" ou "switch case".
+function exibirRodadaAtual(rodada) {
+    //Declarando uma constante objeto para substituir o uso de vários "if" ou "switch case".
 const rodada_atual = [
     {
         condicao: (rodada) => rodada <= 4,
-        mensagem: "Rodada 1"
+        Rodada: 1
     },
 
     {
         condicao: (rodada) => rodada > 4 && rodada <= 9,
-        mensagem: "Rodada 2"
+        Rodada: 2
     },
 
     {
         condicao: (rodada) => rodada > 9 && rodada <= 12,
-        mensagem: "Rodada 3"
+        Rodada: 3
     },
 
     {
         condicao: (rodada) => rodada === 13,
-        mensagem: "Rodada 4"
+        Rodada: 4
     },
 
     {
         condicao: (rodada) => rodada === 14,
-        mensagem: "Rodada 5, rodada Final. Vale tudo!"
+        Rodada: 5
     }
 ];
 
-function exibirRodadaAtual(rodada) {
     for (const iterar_rodada_atual of rodada_atual) {
         if (iterar_rodada_atual.condicao(rodada)) {
-            return iterar_rodada_atual.mensagem;
+            return iterar_rodada_atual.Rodada;
         }
     }   
 }
@@ -144,9 +148,10 @@ function jogoExecutando(){
         }
     ];
 
-    for (let contagem_pergunta = 0; contagem_pergunta < questoes.length; contagem_pergunta++) {
-        console.log(`Pergunta ${contagem_pergunta + 1} \n`);
-        exibirRodadaAtual(contagem_pergunta);
+    let pontos = 0;
+    for (let contagem_pergunta = 0; contagem_pergunta < questoes.length; contagem_pergunta++, pontos++) {
+        console.log(`\nPergunta ${contagem_pergunta + 1} \n`);
+        console.log(`${exibirRodadaAtual(contagem_pergunta)}ª Rodada \n`); // Exibe a rodada atual com base na contagem de perguntas.
 
         let perguntaAtual = questoes[contagem_pergunta].pergunta;
         let correta = questoes[contagem_pergunta].correta;
@@ -161,43 +166,48 @@ function jogoExecutando(){
             console.log(`${i + 1}ªalternativa - ${alternativas[i]}`);
         }
 
-        console.log(`R$ ${calcularValorTotal(pontos)}, esse será o valor em dinheiro caso pare agora` +
+        console.log(`\nR$ ${calcularValorTotal(pontos)}, esse será o valor em dinheiro caso pare agora` +
         `\nCaso deseje parar aperte qualquer outra tecla fora dos números específicados abaixo.`); // Atualiza o valor do prêmio a cada resposta correta.
 
-        let respostaUsuario = prompt("Digite o número da alternativa correta (1 a 4): ");
+        let respostaUsuario = prompt("\nDigite o número da alternativa correta (1 a 4): ");
 
         if (alternativas[respostaUsuario - 1] === correta) {
             console.log("\nResposta correta!");
-            pontos++;
         } 
 
         else if (falsas.includes(alternativas[respostaUsuario - 1])) {
-            console.log(`A resposta correta era: ${correta}`);
-            console.log("\nResposta errada!");
+            console.log(`\nResposta errada! A resposta correta era: ${correta}`);
+            console.log(`Faltava ${(exibirRodadaAtual(contagem_pergunta)-5)*-1} Rodada(s).`);
 
-            if (exibirRodadaAtual(contagem_pergunta) === "Rodada 4") {
+            if (exibirRodadaAtual(contagem_pergunta) === 4) {
                 console.log(`Parabéns, ${jogador}! Você ganhou R$${calcularValorTotal(pontos)/2}!`);
+                console.log(`Obrigado pela sua participação neste programa. Faltava apenas ${(exibirRodadaAtual(contagem_pergunta)-5)*-1} Rodada(s) para o fim.`);
+                break;
             }
 
-            else if (exibirRodadaAtual(contagem_pergunta) === "Rodada 5, rodada Final. Vale tudo!") {
-                console.log(`Infelizmente você perdeu tudo, ${jogador}. Obrigado pela sua participação!`);
+            else if (exibirRodadaAtual(contagem_pergunta) === 5) {
+                console.log(`Infelizmente esta era a pergunta final, você perdeu todo o valor adquirido. \nObrigado pela sua participação neste programa.`);
+                break;
             }
+            break;
         }
 
         else {
             const informarRodada = exibirRodadaAtual(contagem_pergunta);
-            console.log(`Você escolheu parar o jogo na rodada ${informarRodada}.`);
+            console.log(`Você escolheu parar o jogo na rodada ${informarRodada}, ainda faltava ${(informarRodada - 5)*-1}.`);
             break;
         }
-        novaPartida(); // Chama a função para reiniciar o jogo.
+        
     }
+    console.log(`\nFim do jogo. Pontuação total: ${pontos}`);
+    console.log(`Parabéns, ${jogador}! Você ganhou R$${calcularValorTotal(pontos)}!`);
+    novaPartida();
 }
-
-//Cálculo do valor total ganho pelo jogador.
-let premio = 0; 
 
 function calcularValorTotal(pontos) {
 
+    //Cálculo do valor total ganho pelo jogador.
+    let premio = 0; 
     //os valores de cada variável rodada ou intervalos definidos nas regras do jogo (leia o ReadME). 
     const rodada_5 = 10000; //10 mil cada.
     const rodada_10 = 30000; //30 mil cada.
@@ -224,23 +234,18 @@ function calcularValorTotal(pontos) {
         premio = (pontos * 5 * rodada_5) + (pontos * 5 * rodada_10) + (pontos * 3 * rodada_13) + rodada_14 + rodada_15;
     }
     return premio;
+
 }
-
-novoJogo();
-
-console.log(`\nFim do jogo. Pontuação total: ${pontos}`);
-console.log(`Parabéns, ${jogador}! Você ganhou R$${premio}!`);
 
 function novaPartida(){
     console.log(`\nDeseja jogar novamente?`);
-    let reiniciarJogo = prompt("Digite: Sim ou Não.");
+    let reiniciarJogo = prompt("Digite: Sim ou Não. \nSua resposta: ");
     if (reiniciarJogo && (reiniciarJogo[0] === "S" || reiniciarJogo[0] === "s")) {
-        pontos = 0; // Reseta os pontos para um novo jogo.
         novoJogo();
+        preparacao();
     }
     else {
         console.log("\nObrigado por jogar! Até a próxima.");
     }
 }
 
-novaPartida();
