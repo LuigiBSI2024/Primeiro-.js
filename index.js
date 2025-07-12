@@ -6,25 +6,63 @@ function novoJogo() {
     jogador = prompt("Insira seu nome participante: ");
 
     console.log(
-    "Bem-vindo ao Show do Milhão, " + jogador + "!" +
-    "\nEsse jogo consiste em uma série de 15 perguntas e respostas."
+        "Bem-vindo ao Show do Milhão, " + jogador + "!" +
+        "\nEsse jogo consiste em uma série de 15 perguntas e respostas."
     );
 
-  function preparacao() {
-    let resposta = prompt("Está pronto?\nDigite: Sim ou Não.");
+    function preparacao() {
+        let resposta = prompt("Está pronto?\nDigite: Sim ou Não.");
 
-    if (resposta && (resposta[0] === "S" || resposta[0] === "s")) {
-        jogoExecutando(); 
-    } 
+        if (resposta && (resposta[0] === "S" || resposta[0] === "s")) {
+            jogoExecutando(); 
+        } 
 
-    else {
-        console.log("Aguardamos pacientemente, tome seu tempo.");
-        preparacao(); // chamada recursiva controlada
+        else {
+            console.log("Aguardamos pacientemente, tome seu tempo.");
+            preparacao(); // chamada recursiva controlada
+        }
     }
-  }
+    preparacao();
 }
 
 let pontos = 0; //"pontos" significa quantas questões foram acertadas pelo jogador.
+
+//Declarando uma constante objeto para substituir o uso de vários "if" ou "switch case".
+const rodada_atual = [
+    {
+        condicao: (rodada) => rodada <= 4,
+        mensagem: "Rodada 1"
+    },
+
+    {
+        condicao: (rodada) => rodada > 4 && rodada <= 9,
+        mensagem: "Rodada 2"
+    },
+
+    {
+        condicao: (rodada) => rodada > 9 && rodada <= 12,
+        mensagem: "Rodada 3"
+    },
+
+    {
+        condicao: (rodada) => rodada === 13,
+        mensagem: "Rodada 4"
+    },
+
+    {
+        condicao: (rodada) => rodada === 14,
+        mensagem: "Rodada 5, rodada Final. Vale tudo!"
+    }
+];
+
+function exibirRodadaAtual(rodada) {
+    for (const iterar_rodada_atual of rodada_atual) {
+        if (iterar_rodada_atual.condicao(rodada)) {
+            return iterar_rodada_atual.mensagem;
+        }
+    }   
+}
+
 
 function jogoExecutando(){
     //As questões serão sobre geografia e história.
@@ -106,12 +144,13 @@ function jogoExecutando(){
         }
     ];
 
-    for (let rodada = 0; rodada < questoes.length; rodada++) {
-        console.log(`Rodada ${rodada + 1} \n`);
+    for (let contagem_pergunta = 0; contagem_pergunta < questoes.length; contagem_pergunta++) {
+        console.log(`Pergunta ${contagem_pergunta + 1} \n`);
+        exibirRodadaAtual(contagem_pergunta);
 
-        let perguntaAtual = questoes[rodada].pergunta;
-        let correta = questoes[rodada].correta;
-        let falsas = questoes[rodada].falsas;
+        let perguntaAtual = questoes[contagem_pergunta].pergunta;
+        let correta = questoes[contagem_pergunta].correta;
+        let falsas = questoes[contagem_pergunta].falsas;
 
         // Junta todas as alternativas e embaralha
         let alternativas = [correta, ...falsas]; //o "..." serve para concatenar arrays. Ele funciona como um operador de espalhamento, que "espalha" os elementos de um array em outro array ou em uma função, sendo nesse caso, o array "falsas" está sendo espalhado dentro do array "alternativas".
@@ -125,20 +164,22 @@ function jogoExecutando(){
         console.log(`R$ ${calcularValorTotal(pontos)}, esse será o valor em dinheiro caso pare agora` +
         `\nCaso deseje parar aperte qualquer outra tecla fora dos números específicados abaixo.`); // Atualiza o valor do prêmio a cada resposta correta.
 
-        let respostaUsuario = prompt("\nDigite o número da alternativa correta (1 a 4): ");
-        
+        let respostaUsuario = prompt("Digite o número da alternativa correta (1 a 4): ");
+
         if (alternativas[respostaUsuario - 1] === correta) {
             console.log("\nResposta correta!");
             pontos++;
         } 
 
-        else if (alternativas[respostaUsuario - 1] === falsas) {
+        else if (falsas.includes(alternativas[respostaUsuario - 1])) {
+            console.log(`A resposta correta era: ${correta}`);
             console.log("\nResposta errada!");
             break; 
         }
 
         else {
-            console.log("Você escolheu parar o jogo.");
+            const informarRodada = exibirRodadaAtual(contagem_pergunta);
+            console.log(`Você escolheu parar o jogo na rodada ${informarRodada}.`);
             break; // Sai do loop principal e termina o jogo.
         }
 
@@ -146,7 +187,7 @@ function jogoExecutando(){
 }
 
 //Cálculo do valor total ganho pelo jogador.
-let premio; 
+let premio = 0; 
 
 function calcularValorTotal(pontos) {
 
@@ -159,13 +200,14 @@ function calcularValorTotal(pontos) {
 
     if (pontos > 0 && pontos <= 5) {
         premio = pontos * rodada_5;
-    
-        if (pontos > 5 && pontos <= 10) {
+    }
+
+    else if (pontos > 5 && pontos <= 10) {
             premio = (pontos * 5 * rodada_5) + ((pontos - 5) * rodada_10);
-        }
-        else if (pontos > 10 && pontos <= 13) {
-            premio = (pontos *5 * rodada_5) + (pontos * 5 * rodada_10) + ((pontos - 10) * rodada_13);
-        }
+    }
+
+    else if (pontos > 10 && pontos <= 13) {
+        premio = (pontos *5 * rodada_5) + (pontos * 5 * rodada_10) + ((pontos - 10) * rodada_13);
     }
 
     else if (pontos === 14) {
@@ -178,8 +220,6 @@ function calcularValorTotal(pontos) {
 }
 
 novoJogo();
-jogoExecutando();
 
 console.log(`Fim do jogo. Pontuação total: ${pontos}`);
 console.log(`Parabéns, ${jogador}! Você ganhou R$${premio} reais!`);
-console.log(calcularValorTotal(pontos));
