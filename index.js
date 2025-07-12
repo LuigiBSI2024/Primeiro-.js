@@ -11,7 +11,7 @@ function novoJogo() {
     );
 
     function preparacao() {
-        let resposta = prompt("Está pronto?\nDigite: Sim ou Não.");
+        let resposta = prompt("Está pronto?\nDigite: Sim ou Não. \nSua resposta: ");
 
         if (resposta && (resposta[0] === "S" || resposta[0] === "s")) {
             jogoExecutando(); 
@@ -174,15 +174,22 @@ function jogoExecutando(){
         else if (falsas.includes(alternativas[respostaUsuario - 1])) {
             console.log(`A resposta correta era: ${correta}`);
             console.log("\nResposta errada!");
-            break; 
+
+            if (exibirRodadaAtual(contagem_pergunta) === "Rodada 4") {
+                console.log(`Parabéns, ${jogador}! Você ganhou R$${calcularValorTotal(pontos)/2}!`);
+            }
+
+            else if (exibirRodadaAtual(contagem_pergunta) === "Rodada 5, rodada Final. Vale tudo!") {
+                console.log(`Infelizmente você perdeu tudo, ${jogador}. Obrigado pela sua participação!`);
+            }
         }
 
         else {
             const informarRodada = exibirRodadaAtual(contagem_pergunta);
             console.log(`Você escolheu parar o jogo na rodada ${informarRodada}.`);
-            break; // Sai do loop principal e termina o jogo.
+            break;
         }
-
+        novaPartida(); // Chama a função para reiniciar o jogo.
     }
 }
 
@@ -221,5 +228,19 @@ function calcularValorTotal(pontos) {
 
 novoJogo();
 
-console.log(`Fim do jogo. Pontuação total: ${pontos}`);
-console.log(`Parabéns, ${jogador}! Você ganhou R$${premio} reais!`);
+console.log(`\nFim do jogo. Pontuação total: ${pontos}`);
+console.log(`Parabéns, ${jogador}! Você ganhou R$${premio}!`);
+
+function novaPartida(){
+    console.log(`\nDeseja jogar novamente?`);
+    let reiniciarJogo = prompt("Digite: Sim ou Não.");
+    if (reiniciarJogo && (reiniciarJogo[0] === "S" || reiniciarJogo[0] === "s")) {
+        pontos = 0; // Reseta os pontos para um novo jogo.
+        novoJogo();
+    }
+    else {
+        console.log("\nObrigado por jogar! Até a próxima.");
+    }
+}
+
+novaPartida();
