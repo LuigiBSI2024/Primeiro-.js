@@ -26,10 +26,12 @@ function preparacao() {
     }
 }
 
+function formatarMoeda(valor) {
+    return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+}
+
 novoJogo();
 preparacao();
-
-let pontos = 0; //"pontos" significa quantas questões foram acertadas pelo jogador.
 
 function exibirRodadaAtual(rodada) {
     //Declarando uma constante objeto para substituir o uso de vários "if" ou "switch case".
@@ -43,7 +45,7 @@ const rodada_atual = [
     {
         condicao: (rodada) => rodada > 4 && rodada <= 9,
         Rodada: 2,
-        "Jogador:" jogador
+        Jogador: jogador
     },
 
     {
@@ -67,7 +69,10 @@ const rodada_atual = [
 
     for (const iterar_rodada_atual of rodada_atual) {
         if (iterar_rodada_atual.condicao(rodada)) {
-            return iterar_rodada_atual.Rodada, iterar_rodada_atual.Jogador;
+            return {
+                rodada: iterar_rodada_atual.Rodada, 
+                jogador: iterar_rodada_atual.Jogador
+            };
         }
     }   
 }
@@ -153,9 +158,10 @@ function jogoExecutando(){
     ];
 
     let pontos = 0;
-    for (let contagem_pergunta = 0; contagem_pergunta < questoes.length; contagem_pergunta++, pontos++) {
+    for (let contagem_pergunta = 0; contagem_pergunta < questoes.length; contagem_pergunta++) {
         console.log(`\nPergunta ${contagem_pergunta + 1} \n`);
-        console.log(`${exibirRodadaAtual(contagem_pergunta)}ª Rodada \n`); // Exibe a rodada atual com base na contagem de perguntas.
+        console.log(`Jogador: ${exibirRodadaAtual(contagem_pergunta).jogador}`); // Exibe o nome do jogador.
+        console.log(`${exibirRodadaAtual(contagem_pergunta).rodada}ª Rodada \n`); // Exibe a rodada atual com base na contagem de perguntas.
 
         let perguntaAtual = questoes[contagem_pergunta].pergunta;
         let correta = questoes[contagem_pergunta].correta;
@@ -167,29 +173,30 @@ function jogoExecutando(){
 
         console.log(perguntaAtual);
         for (let i = 0; i < alternativas.length; i++) {
-            console.log(`${i + 1}ªalternativa - ${alternativas[i]}`);
+            console.log(`${i + 1}ª alternativa - ${alternativas[i]}`);
         }
 
-        console.log(`\nR$ ${calcularValorTotal(pontos)}, esse será o valor em dinheiro caso pare agora` +
+        console.log(`\n${formatarMoeda(calcularValorTotal(pontos))} esse será o valor em dinheiro caso pare agora. ` +
         `\nCaso deseje parar aperte qualquer outra tecla fora dos números específicados abaixo.`); // Atualiza o valor do prêmio a cada resposta correta.
 
         let respostaUsuario = prompt("\nDigite o número da alternativa correta (1 a 4): ");
 
         if (alternativas[respostaUsuario - 1] === correta) {
             console.log("\nResposta correta!");
+            pontos++; // Incrementa só se acertar
         } 
 
         else if (falsas.includes(alternativas[respostaUsuario - 1])) {
             console.log(`\nResposta errada! A resposta correta era: ${correta}`);
-            console.log(`Faltava ${(exibirRodadaAtual(contagem_pergunta)-5)*-1} Rodada(s).`);
+            console.log(`Faltava ${(exibirRodadaAtual(contagem_pergunta).rodada - 5)*-1} Rodada(s).`);
 
-            if (exibirRodadaAtual(contagem_pergunta) === 4) {
-                console.log(`Parabéns, ${jogador}! Você ganhou R$${calcularValorTotal(pontos)/2}!`);
-                console.log(`Obrigado pela sua participação neste programa. Faltava apenas ${(exibirRodadaAtual(contagem_pergunta)-5)*-1} Rodada(s) para o fim.`);
+            if (exibirRodadaAtual(contagem_pergunta).rodada === 4) {
+                console.log(`Parabéns, ${jogador}! Você ganhou ${formatarMoeda(calcularValorTotal(pontos)/2)}!`);
+                console.log(`Obrigado pela sua participação neste programa. Faltava apenas ${(exibirRodadaAtual(contagem_pergunta).rodada-5)*-1} Rodada(s) para o fim.`);
                 break;
             }
 
-            else if (exibirRodadaAtual(contagem_pergunta) === 5) {
+            else if (exibirRodadaAtual(contagem_pergunta).rodada === 5) {
                 console.log(`Infelizmente esta era a pergunta final, você perdeu todo o valor adquirido. \nObrigado pela sua participação neste programa.`);
                 break;
             }
@@ -197,14 +204,14 @@ function jogoExecutando(){
         }
 
         else {
-            const informarRodada = exibirRodadaAtual(contagem_pergunta);
+            const informarRodada = exibirRodadaAtual(contagem_pergunta).rodada;
             console.log(`Você escolheu parar o jogo na rodada ${informarRodada}, ainda faltava ${(informarRodada - 5)*-1}.`);
             break;
         }
         
     }
     console.log(`\nFim do jogo. Pontuação total: ${pontos}`);
-    console.log(`Parabéns, ${jogador}! Você ganhou R$${calcularValorTotal(pontos)}!`);
+    console.log(`Parabéns, ${jogador}! Você ganhou ${formatarMoeda(calcularValorTotal(pontos))}!`);
     novaPartida();
 }
 
@@ -219,23 +226,32 @@ function calcularValorTotal(pontos) {
     const rodada_14 = 200000; //200 mil, caso o jogador erre o valor totalizado das anteriores será cortado ao meio, levando para casa apenas a metade da soma dos valores anteriores.
     const rodada_15 = 1000000; //1 milhão, mas com o risco de perder todo o dinheiro somado das anteriores.
 
+    //Calculando o prêmio com base na quantidade de pontos.
+    premio = pontos * rodada_5;
+    // O math.abs() é o módulo do javascript, que retorna o valor absoluto de um número, ou seja, o número sem sinal negativo.
+    // Ele é usado aqui para garantir que o cálculo funcione corretamente, mesmo que o jogador tenha parado o jogo antes de atingir a pontuação mínima para cada rodada.
+    let premio_2 = premio + Math.abs((pontos-5)) * rodada_10;
+    let premio_3 = premio_2 + Math.abs((pontos - 10)) * rodada_13;
+    let premio_4 = premio_3 + rodada_14;
+    let premio_5 = premio_4 + rodada_15;
+    
     if (pontos > 0 && pontos <= 5) {
-        premio = pontos * rodada_5;
+        return premio;
     }
 
     else if (pontos > 5 && pontos <= 10) {
-            premio = (pontos * 5 * rodada_5) + ((pontos - 5) * rodada_10);
+        return premio_2;
     }
 
     else if (pontos > 10 && pontos <= 13) {
-        premio = (pontos *5 * rodada_5) + (pontos * 5 * rodada_10) + ((pontos - 10) * rodada_13);
+        return premio_3;
     }
 
     else if (pontos === 14) {
-        premio = ((pontos * 5 * rodada_5) + (pontos * 5 * rodada_10) + (pontos * 3 * rodada_13) + rodada_14);
+        return premio_4;
     }
     else if (pontos === 15) {
-        premio = (pontos * 5 * rodada_5) + (pontos * 5 * rodada_10) + (pontos * 3 * rodada_13) + rodada_14 + rodada_15;
+        return premio_5;
     }
     return premio;
 
