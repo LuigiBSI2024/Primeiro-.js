@@ -1,6 +1,6 @@
-const prompt = require('prompt-sync')({sigint: true}); // Importa o prompt-sync para entrada de dados, ele é instalado via este comando: npm install prompt-sync.
+const prompt = require('prompt-sync')({sigint: true}); // Importa o prompt-sync para entrada de dados, ele é instalado via este comando: npm install prompt-sync
 
-let jogador;;
+let jogador;
 
 function novoJogo() {
     jogador = prompt("Insira seu nome participante: ");
@@ -22,7 +22,7 @@ function preparacao() {
 
     else {
         console.log("Aguardamos pacientemente, tome seu tempo.");
-        preparacao();
+        
     }
 }
 
@@ -36,37 +36,41 @@ function exibirRodadaAtual(rodada) {
 const rodada_atual = [
     {
         condicao: (rodada) => rodada <= 4,
-        Rodada: 1
+        Rodada: 1,
+        Jogador: jogador
     },
 
     {
         condicao: (rodada) => rodada > 4 && rodada <= 9,
-        Rodada: 2
+        Rodada: 2,
+        "Jogador:" jogador
     },
 
     {
         condicao: (rodada) => rodada > 9 && rodada <= 12,
-        Rodada: 3
+        Rodada: 3,
+        Jogador: jogador
     },
 
     {
         condicao: (rodada) => rodada === 13,
-        Rodada: 4
+        Rodada: 4,
+        Jogador: jogador
     },
 
     {
         condicao: (rodada) => rodada === 14,
-        Rodada: 5
+        Rodada: 5,
+        Jogador: jogador 
     }
 ];
 
     for (const iterar_rodada_atual of rodada_atual) {
         if (iterar_rodada_atual.condicao(rodada)) {
-            return iterar_rodada_atual.Rodada;
+            return iterar_rodada_atual.Rodada, iterar_rodada_atual.Jogador;
         }
     }   
 }
-
 
 function jogoExecutando(){
     //As questões serão sobre geografia e história.
