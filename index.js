@@ -13,8 +13,9 @@ function novoJogo() {
 }
 
 function preparacao() {
-        
-    let resposta = prompt("\nEstá pronto? Digite: Sim ou Não. \nSua resposta: ");
+            
+console.log("Está pronto? Digite: Sim ou Não. \n");
+let resposta = prompt("Sua resposta: ");
 
     if (resposta[0] === "S" || resposta[0] === "s") {
         jogoExecutando(); 
@@ -22,7 +23,7 @@ function preparacao() {
 
     else {
         console.log("Aguardamos pacientemente, tome seu tempo.");
-        
+        preparacao();    
     }
 }
 
