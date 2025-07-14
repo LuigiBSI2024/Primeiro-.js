@@ -36,7 +36,10 @@ A partir da segunda pergunta, o participante pode optar por parar, o que corresp
 - Leia as "Regras" para sanar qualquer dúvida
 
 # Como executar?
-- Abra o terminal do Codespace Github e digite: npm start
+- Instale a ferramenta node.js
+- Instale o pacote prompt-sync, para isto digite no terminal: npm install prompt-sync
+- Ainda no terminal digite: npm start
+- Feito isso o programa se inicia
 
 ## Fontes
 
