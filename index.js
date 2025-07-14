@@ -194,11 +194,13 @@ function jogoExecutando(){
             if (exibirRodadaAtual(contagem_pergunta).rodada === 4) {
                 console.log(`Parabéns, ${jogador}! Você ganhou ${formatarMoeda(calcularValorTotal(pontos)/2)}!`);
                 console.log(`Obrigado pela sua participação neste programa. Faltava apenas ${(exibirRodadaAtual(contagem_pergunta).rodada-5)*-1} Rodada(s) para o fim.`);
+                novaPartida();
                 break;
             }
 
             else if (exibirRodadaAtual(contagem_pergunta).rodada === 5) {
                 console.log(`Infelizmente esta era a pergunta final, você perdeu todo o valor adquirido. \nObrigado pela sua participação neste programa.`);
+                novaPartida();
                 break;
             }
             break;
