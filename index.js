@@ -259,8 +259,8 @@ function calcularValorTotal(pontos) {
 }
 
 function novaPartida(){
-    console.log(`\nDeseja jogar novamente?`);
-    let reiniciarJogo = prompt("Digite: Sim ou Não. \nSua resposta: ");
+    console.log(`\nDeseja jogar novamente? \nDigite: Sim ou Não. \n`);
+    let reiniciarJogo = prompt("Sua resposta: ");
     if (reiniciarJogo && (reiniciarJogo[0] === "S" || reiniciarJogo[0] === "s")) {
         novoJogo();
         preparacao();
